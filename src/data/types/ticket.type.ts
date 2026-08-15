@@ -17,6 +17,10 @@ export interface Ticket {
     name: string;
     email: string;
   };
+  assignee?: {
+    name: string;
+    email: string;
+  };
 }
 
 export interface CreateTicket {

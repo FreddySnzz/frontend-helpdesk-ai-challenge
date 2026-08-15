@@ -3,27 +3,26 @@ import { CreateTicket, Ticket } from "../types/ticket.type";
 export const ticketService = {
   async getAllTickets(token: string): Promise<Ticket[]> {
     if (!token) throw new Error('Realize o login primeiro.');
-
     const response = await fetch('http://localhost:8080/ticket', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
+      headers: { 'Authorization': `Bearer ${token}` },
     });
-
     const data = await response.json();
+    if (!response.ok) throw new Error(data.message || 'Erro ao buscar chamados');
+    return data;
+  },
 
-    if (!response.ok) {
-      throw new Error(data.message || 'Erro ao buscar chamados');
-    }
-
+  async getTicketById(id: string, token: string): Promise<any> {
+    if (!token) throw new Error('Realize o login primeiro.');
+    const response = await fetch(`http://localhost:8080/ticket/${id}`, {
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || 'Erro ao buscar detalhes do chamado');
     return data;
   },
 
   async createTicket(payload: CreateTicket, token: string): Promise<Ticket> {
     if (!token) throw new Error('Realize o login primeiro.');
-
     const response = await fetch('http://localhost:8080/ticket', {
       method: 'POST',
       headers: {
@@ -32,32 +31,51 @@ export const ticketService = {
       },
       body: JSON.stringify(payload),
     });
-
     const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || 'Erro ao criar chamados');
-    }
-
+    if (!response.ok) throw new Error(data.message || 'Erro ao criar chamado (Possível duplicidade)');
     return data;
   },
 
-  async deleteTicket(id: string, token: string): Promise<void> {
+  async updateTicket(id: string, payload: any, token: string): Promise<void> {
     if (!token) throw new Error('Realize o login primeiro.');
-
-    const response = await fetch('http://localhost:8080/ticket/' + id, {
-      method: 'DELETE',
+    const response = await fetch(`http://localhost:8080/ticket/${id}`, {
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
+      body: JSON.stringify(payload),
     });
-
-    if (response.ok) return;
-
-    const data = await response.json();
-
     if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.message || 'Erro ao atualizar chamado');
+    }
+  },
+
+  async addComment(ticketId: string, text: string, token: string): Promise<void> {
+    if (!token) throw new Error('Realize o login primeiro.');
+    const response = await fetch(`http://localhost:8080/ticket/${ticketId}/comments`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ text }),
+    });
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.message || 'Erro ao adicionar comentário');
+    }
+  },
+
+  async deleteTicket(id: string, token: string): Promise<void> {
+    if (!token) throw new Error('Realize o login primeiro.');
+    const response = await fetch(`http://localhost:8080/ticket/${id}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    if (!response.ok) {
+      const data = await response.json();
       throw new Error(data.message || 'Erro ao deletar chamado');
     }
   },

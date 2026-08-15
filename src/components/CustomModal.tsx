@@ -31,13 +31,13 @@ export default function CustomModal({
     >
       <div 
         onClick={(e) => e.stopPropagation()}
-        className={`flex flex-col gap-2 p-6 w-full max-w-md md:max-w-xl
+        className={`flex flex-col gap-2 p-6 w-full max-w-md md:max-w-2xl
           bg-zinc-800 text-zinc-200 rounded-lg shadow-xl ${className}
         `}
       >
         {title && (
           <div className="flex justify-between items-center border-b border-muted-foreground/50 pb-4">
-            <h2 className="text-lg font-bold text-zinc-200">
+            <h2 className="text-lg font-bold text-zinc-50">
               {title}
             </h2>
             <button 
