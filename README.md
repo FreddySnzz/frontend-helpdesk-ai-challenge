@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+# Helpdesk Inteligente com IA - Interface Web (Frontend)
 
-First, run the development server:
+Este é o repositório frontend do sistema de gerenciamento de chamados (Helpdesk) com triagem automatizada via Inteligência Artificial.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+A interface foi projetada para ser ágil, responsiva e reativa, entregando uma experiência imersiva e atualizações em tempo real para a gestão de chamados.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠 Tecnologias Utilizadas
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Framework: Next.js 14 (App Router)
+- Linguagem: TypeScript
+- Estilização: Tailwind CSS
+- Componentes UI: shadcn/ui (Radix Primitives)
+- Gráficos: Recharts
+- Comunicação em Tempo Real: Server-Sent Events (SSE) via `@microsoft/fetch-event-source`
+- Gerenciamento de Estado/Auth: Context API e js-cookie
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🌟 Principais Recursos
 
-## Learn More
+- Painel Administrativo Reativo: Conexão SSE mantida viva no cliente para receber atualizações e alertas de chamados de Alta Prioridade instantaneamente, sem necessidade de refresh (F5).
+- Controle de Acesso (RBAC): Middleware no Next.js protegendo rotas privadas e Context API gerenciando as visões isoladas de `ADMIN` e `SOLICITANTE`.
+- Gestão Completa de Chamados: Interações em modais modulares, incluindo visualização de histórico, adição de comentários e reatribuição de responsáveis.
+- Gráficos Analíticos: Renderização de indicadores de prioridade (Alta, Média, Baixa) no painel do administrador.
 
-To learn more about Next.js, take a look at the following resources:
+## ⚙️ Pré-requisitos
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Antes de iniciar o frontend, certifique-se de que:
+1. Você possui o **Node.js** (versão 18 ou superior) instalado na sua máquina.
+2. O **Backend do projeto (NestJS)** está rodando localmente, preferencialmente na porta `8080` (http://localhost:8080), pois o frontend fará as requisições para este endereço.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🚀 Como Executar o Projeto Localmente
 
-## Deploy on Vercel
+1. Clone este repositório e acesse a pasta do projeto:
+   ```bash
+   git clone <url-do-repositorio-frontend>
+   cd <nome-da-pasta>
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. Instale as dependências do projeto:
+   ```bash
+   npm install
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. Inicie o servidor de desenvolvimento:
+   ```bash
+   npm run dev
+   ```
+
+4. Acesse a aplicação no seu navegador:
+   Abra http://localhost:3000
+
+## 🔐 Acesso ao Sistema
+
+A autenticação consome os dados diretamente da API. Para testar as diferentes visões do sistema, utilize os usuários previamente populados no banco de dados do backend:
+
+- Visão Administrador (Com métricas e SSE):
+  > E-mail: admin@helpdesk.com
+  Senha: senha123
+
+- Visão Solicitante (Apenas abertura e acompanhamento):
+  > E-mail: solicitante@helpdesk.com
+  Senha: senha123
+
+## 📂 Estrutura de Pastas
+
+- `/src/app`: Rotas da aplicação (App Router) e Middleware de proteção.
+- `/src/components`: Componentes visuais isolados (UI Base, Layouts, Modais).
+- `/src/data/contexts`: Context API para gerenciamento do usuário logado.
+- `/src/data/services`: Camada de abstração para chamadas HTTP (Fetch API e EventSource), isolando a regra de comunicação com o backend dos componentes React.
