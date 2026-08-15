@@ -49,11 +49,20 @@ import {
   DropdownMenuSeparator, 
   DropdownMenuTrigger 
 } from "./ui/dropdown-menu";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { 
+  Select, 
+  SelectContent, 
+  SelectGroup, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "./ui/select";
 import { cn } from "@/lib/utils";
+import { Comment } from "@/data/types/comment.type";
 
 interface DashboardLayoutProps {
   initialTickets: Ticket[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   initialMetrics: any;
   accessToken: string;
 }
@@ -82,37 +91,6 @@ export default function DashboardLayout({
   const [filterPriority, setFilterPriority] = useState<string>('TODAS');
 
   const abortControllerRef = useRef<AbortController | null>(null);
-
-  useEffect(() => {
-    if (user?.role !== 'ADMIN') return;
-    
-    abortControllerRef.current = new AbortController();
-
-    metricsService.listenStreamEvents(
-      accessToken,
-      abortControllerRef.current.signal,
-      (payload) => {
-        setMetrics(payload.metrics);
-        refreshTickets();
-
-        if (payload.alert) {
-          toast.error("🚨 NOVO CHAMADO URGENTE 🚨", {
-            description: payload.alert,
-            duration: 10000,
-          });
-        }
-      },
-      (error) => {
-        if (error instanceof Error) toast.error("Erro ao conectar-se ao SSE: " + error.message);
-      }
-    );
-
-    return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-    }
-  }, [user, accessToken]);
 
   const refreshTickets = async () => {
     try {
@@ -201,6 +179,37 @@ export default function DashboardLayout({
     }
   }
 
+  useEffect(() => {
+    if (user?.role !== 'ADMIN') return;
+    
+    abortControllerRef.current = new AbortController();
+
+    metricsService.listenStreamEvents(
+      accessToken,
+      abortControllerRef.current.signal,
+      (payload) => {
+        setMetrics(payload.metrics);
+        refreshTickets();
+
+        if (payload.alert) {
+          toast.error("🚨 NOVO CHAMADO URGENTE 🚨", {
+            description: payload.alert,
+            duration: 10000,
+          });
+        }
+      },
+      (error) => {
+        if (error instanceof Error) toast.error("Erro ao conectar-se ao SSE: " + error.message);
+      }
+    );
+
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    }
+  }, [user, accessToken]);
+
   const filteredTickets = useMemo(() => {
     return tickets.filter(t => {
       const matchStatus = filterStatus === 'TODOS' || t.status === filterStatus;
@@ -217,6 +226,7 @@ export default function DashboardLayout({
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const chartData = metrics?.byPriority?.map((m: any) => ({
     name: m.priority,
     value: m._count.id
@@ -229,14 +239,40 @@ export default function DashboardLayout({
       case 'baixa': return '#006045'; 
       default: return '#aaaaaa';      
     }
-  };
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const statusChartData = metrics?.byStatus?.map((m: any) => ({
+    name: m.status,
+    value: m._count.id
+  })) || [];
+
+  const getHexStatusColor = (status: string) => {
+    switch (status?.toUpperCase()) {
+      case 'ABERTO': return '#3b82f6';    
+      case 'EM_ANDAMENTO': return '#eab308';
+      case 'RESOLVIDO': return '#22c55e';   
+      case 'FECHADO': return '#ef4444';   
+      default: return '#8b5cf6';           
+    }
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status?.toUpperCase()) {
+      case 'ABERTO': return 'bg-blue-500 hover:bg-blue-600 text-white';
+      case 'EM_ANDAMENTO': return 'bg-yellow-500 hover:bg-yellow-600 text-white';
+      case 'RESOLVIDO': return 'bg-green-500 hover:bg-green-600 text-white';
+      case 'FECHADO': return 'bg-red-500 hover:bg-red-600 text-white';
+      default: return 'bg-violet-500 hover:bg-violet-600 text-white';
+    }
+  }
   
   const isTicketClosed = selectedTicket?.status === 'FECHADO';
 
   return (
     <div className="flex-1 flex flex-col w-full min-h-0">
       <div className="flex flex-col">
-        <main className="flex flex-col w-full mb-8">
+        <main className="px-4 md:px-8 flex flex-col w-full mb-8">
           <div className="flex p-4 justify-between">
             <div className="flex flex-col">
               <h1 className="text-lg font-bold tracking-tight">
@@ -259,8 +295,8 @@ export default function DashboardLayout({
           <hr className="border-muted-foreground/20" />
           
           {user?.role === 'ADMIN' && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 px-4 md:px-8 mb-4">
-              <Card className="bg-primary rounded-xl shadow-sm border border-muted-foreground/20 max-w-70">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 mb-4">
+              <Card className="bg-primary rounded-xl shadow-sm border border-muted-foreground/20">
                 <CardHeader>
                   <CardTitle className="text-sm font-bold text-zinc-200">
                     Total por Prioridade
@@ -272,7 +308,14 @@ export default function DashboardLayout({
                       <PieChart responsive>
                         <Pie
                           data={chartData}
-                          cx="50%" cy="50%" labelLine={false} innerRadius={0} outerRadius={80} paddingAngle={0} dataKey="value"
+                          cx="50%" 
+                          cy="50%" 
+                          labelLine={false} 
+                          innerRadius={0} 
+                          outerRadius={80} 
+                          paddingAngle={0} 
+                          dataKey="value"
+                          stroke="#0000000"
                         >
                           {chartData.map((entry: any, index: number) => (
                             <Cell key={`cell-${index}`} fill={getHexPriorityColor(entry.name)} />
@@ -303,10 +346,68 @@ export default function DashboardLayout({
                   )}
                 </CardContent>
               </Card>
+
+              <Card className="bg-primary rounded-xl shadow-sm border border-muted-foreground/20">
+                <CardHeader>
+                  <CardTitle className="text-sm font-bold text-zinc-200">
+                    Total por Status
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="h-45">
+                  {statusChartData.length > 0 ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart responsive>
+                        <Pie
+                          data={statusChartData}
+                          cx="50%" 
+                          cy="50%" 
+                          labelLine={false} 
+                          innerRadius={0} 
+                          outerRadius={80} 
+                          paddingAngle={0} 
+                          dataKey="value"
+                          stroke="#0000000"
+                        >
+                          {statusChartData.map((entry: any, index: number) => (
+                            <Cell 
+                              key={`cell-${index}`} 
+                              fill={getHexStatusColor(entry.name)} 
+                            />
+                          ))}
+                        </Pie>
+                        <Tooltip 
+                          contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', borderRadius: '8px' }} 
+                          itemStyle={{ color: '#e4e4e7' }}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="flex h-full items-center justify-center">
+                      <p className="text-2xl font-bold text-zinc-400">0</p>
+                    </div>
+                  )}
+                </CardContent>
+                <CardContent>
+                  {metrics?.byStatus?.length > 0 ? (
+                    metrics.byStatus.map((m: any) => (
+                      <div key={m.status} className="flex justify-between items-center mt-2">
+                        <span className="text-sm font-bold text-zinc-200">
+                          {m.status}
+                        </span>
+                        <Badge className={getStatusColor(m.status)}>
+                          {m._count.id}
+                        </Badge>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-2xl font-bold">0</p>
+                  )}
+                </CardContent>
+              </Card>
             </div>
           )}
 
-          <div className="px-4 md:px-8 mt-4 mb-2 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="mt-4 mb-2 flex flex-col md:flex-row justify-between items-center gap-4">
             <h2 className="text-lg font-bold">Lista de Chamados</h2>
             <div className="flex gap-2">
               <Select 
@@ -379,7 +480,7 @@ export default function DashboardLayout({
             </div>
           </div>
 
-          <div className="mx-4 md:mx-8 bg-primary shadow-sm border border-muted-foreground/20 cursor-default rounded-lg overflow-hidden">
+          <div className="bg-primary shadow-sm border border-muted-foreground/20 cursor-default rounded-lg overflow-hidden">
             <Table>
               <TableHeader>
                 <TableRow className="hover:bg-black/20 transition-colors border-muted-foreground/20">
@@ -547,7 +648,7 @@ export default function DashboardLayout({
                   Editar Chamado
                 </p>
                 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1">
                     <label className="text-xs text-muted-foreground">Status</label>
                     <Select 
@@ -679,7 +780,7 @@ export default function DashboardLayout({
                     Nenhuma interação registrada.
                   </p>
                 ) : (
-                  selectedTicket.comments?.map((comment: any) => (
+                  selectedTicket.comments?.map((comment: Comment) => (
                     <div 
                       key={comment.id} 
                       className={`p-3 rounded-lg text-sm border 

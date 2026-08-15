@@ -11,7 +11,8 @@ export default function Header() {
     <header className="bg-black/30 text-secondary shadow-sm px-6 py-3 flex justify-between items-center">
       <div>
         <h1 className="text-xl font-bold tracking-tight flex items-center gap-2">
-          <Activity className="text-slate-700" /> Helpdesk Dashboard
+          <Activity className="text-slate-700" /> 
+          Helpdesk Dashboard
         </h1>
       </div>
       <Button 

@@ -23,9 +23,16 @@ export interface Ticket {
   };
 }
 
-export interface CreateTicket {
+export interface CreateTicketPayload {
   title: string;
   description: string;
+  category?: string | null;
+  priority?: Priority | null;
+  status?: Status | null;
+  assigneeId?: string | null;
+}
+
+export interface EditTicketPayload {
   category?: string | null;
   priority?: Priority | null;
   status?: Status | null;

@@ -1,6 +1,7 @@
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 
 export const metricsService = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async getMetricsData(token: string): Promise<any> {
     if (!token) throw new Error('Realize o login primeiro.');
 
@@ -20,7 +21,9 @@ export const metricsService = {
   listenStreamEvents(
     token: string, 
     signal: AbortSignal, 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onMessage: (payload: any) => void,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (err: any) => void
   ) {
     if (!token) throw new Error('Realize o login primeiro.');
@@ -39,7 +42,7 @@ export const metricsService = {
           const payload = JSON.parse(ev.data);
           onMessage(payload);
         } catch (err) {
-          console.warn('Falha ao processar evento SSE:', ev.data);
+          console.warn('Falha ao processar evento SSE:', ev.data, err);
         }
       },
       onerror(err) {

@@ -47,7 +47,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-md shadow-lg border-0 bg-zinc-800 text-secondary">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold tracking-tight">
-            Helpdesk AI
+            Helpdesk Dashboard
           </CardTitle>
           <CardDescription>
             Insira suas credenciais para acessar a central de chamados.

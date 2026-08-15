@@ -2,6 +2,7 @@ export const authService = {
   async login(
     email: string, 
     password: string
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<any> {
     const response = await fetch('http://localhost:8080/auth/login', {
       method: 'POST',

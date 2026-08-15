@@ -3,7 +3,6 @@ import {
   Geist_Mono, 
   Playfair_Display, 
   Space_Grotesk,
-  Libertinus_Math,
 } from "next/font/google";
 
 const space = Space_Grotesk({

@@ -1,4 +1,4 @@
-import { CreateTicket, Ticket } from "../types/ticket.type";
+import { CreateTicketPayload, EditTicketPayload, Ticket } from "../types/ticket.type";
 
 export const ticketService = {
   async getAllTickets(token: string): Promise<Ticket[]> {
@@ -11,7 +11,7 @@ export const ticketService = {
     return data;
   },
 
-  async getTicketById(id: string, token: string): Promise<any> {
+  async getTicketById(id: string, token: string): Promise<Ticket> {
     if (!token) throw new Error('Realize o login primeiro.');
     const response = await fetch(`http://localhost:8080/ticket/${id}`, {
       headers: { 'Authorization': `Bearer ${token}` },
@@ -21,7 +21,7 @@ export const ticketService = {
     return data;
   },
 
-  async createTicket(payload: CreateTicket, token: string): Promise<Ticket> {
+  async createTicket(payload: CreateTicketPayload, token: string): Promise<Ticket> {
     if (!token) throw new Error('Realize o login primeiro.');
     const response = await fetch('http://localhost:8080/ticket', {
       method: 'POST',
@@ -36,7 +36,7 @@ export const ticketService = {
     return data;
   },
 
-  async updateTicket(id: string, payload: any, token: string): Promise<void> {
+  async updateTicket(id: string, payload: EditTicketPayload, token: string): Promise<void> {
     if (!token) throw new Error('Realize o login primeiro.');
     const response = await fetch(`http://localhost:8080/ticket/${id}`, {
       method: 'PATCH',
