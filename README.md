@@ -7,7 +7,7 @@ A interface foi projetada para ser ágil, responsiva e reativa, entregando uma e
 
 ## 🛠 Tecnologias Utilizadas
 
-- Framework: Next.js 14 (App Router)
+- Framework: Next.js 16 (App Router)
 - Linguagem: TypeScript
 - Estilização: Tailwind CSS
 - Componentes UI: shadcn/ui (Radix Primitives)
