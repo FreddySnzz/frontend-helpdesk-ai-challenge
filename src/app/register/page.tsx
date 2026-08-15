@@ -20,20 +20,21 @@ import { PasswordInput } from '@/components/ui/password-input';
 import { toast } from 'sonner';
 import Link from 'next/link';
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const { login } = useAuth();
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const response = await authService.login(email, password);
+      const response = await authService.register(name, email, password);
       login(response.access_token, response.user);
-      toast.success('Login realizado com sucesso!');
+      toast.success('Usuário cadastrado com sucesso!');
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
@@ -54,8 +55,21 @@ export default function LoginPage() {
             Insira suas credenciais para acessar a central de chamados.
           </CardDescription>
         </CardHeader>
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleRegister}>
           <CardContent className="space-y-4">
+            <div className="space-y-2 text-left">
+              <Label htmlFor="name">Nome</Label>
+              <Input 
+                id="name" 
+                type="name" 
+                placeholder="João Silva"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required 
+                className={cn("border-zinc-900 bg-primary focus:outline-none")}
+              />
+            </div>
+
             <div className="space-y-2 text-left">
               <Label htmlFor="email">E-mail</Label>
               <Input 
@@ -68,6 +82,7 @@ export default function LoginPage() {
                 className={cn("border-zinc-900 bg-primary focus:outline-none")}
               />
             </div>
+
             <div className="space-y-2 text-left">
               <Label htmlFor="password">Senha</Label>
               <PasswordInput 
@@ -83,10 +98,10 @@ export default function LoginPage() {
           </CardContent>
           <CardContent className="text-center mt-1">
             <Link
-              href="/register"
+              href="/login"
               className="text-center text-xs text-zinc-500 hover:text-zinc-400 hover:italic cursor-pointer"
             >
-              Não tem um conta? Cadastre-se.
+              Já possui uma conta? Faça login.
             </Link>
           </CardContent>
           <CardFooter>
@@ -98,10 +113,10 @@ export default function LoginPage() {
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Entrando...
+                  Criando...
                 </>
               ) : (
-                'Entrar'
+                'Cadastrar'
               )}
             </Button>
           </CardFooter>
