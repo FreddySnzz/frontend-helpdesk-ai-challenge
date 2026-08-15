@@ -271,9 +271,9 @@ export default function DashboardLayout({
 
   return (
     <div className="flex-1 flex flex-col w-full min-h-0">
-      <div className="flex flex-col">
-        <main className="px-4 md:px-8 flex flex-col w-full mb-8">
-          <div className="flex p-4 justify-between">
+      <div className="flex flex-col px-4 md:px-8">
+        <main className="flex flex-col w-full mb-8">
+          <div className="flex py-4 justify-between">
             <div className="flex flex-col">
               <h1 className="text-lg font-bold tracking-tight">
                 {user?.role === 'ADMIN' ? 'PAINEL ADMINISTRATIVO' : `Olá, ${user?.name}!`}
