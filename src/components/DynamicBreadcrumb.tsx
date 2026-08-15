@@ -32,7 +32,7 @@ export default function DynamicBreadcrumb({
 
   return (
     <Breadcrumb className={className}>
-      <BreadcrumbList className={`font-sans text-zinc-200 ${listClassName}`}>
+      <BreadcrumbList className={`text-zinc-200 ${listClassName}`}>
         {paths.localeCompare('/dashboard') === 0 ? (
           <>
             <BreadcrumbItem>
@@ -62,7 +62,6 @@ export default function DynamicBreadcrumb({
                 Voltar
               </button>
             </BreadcrumbItem>
-            <BreadcrumbSeparator>/</BreadcrumbSeparator>
           </>
         )}
 
