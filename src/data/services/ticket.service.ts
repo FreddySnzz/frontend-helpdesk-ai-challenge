@@ -1,9 +1,11 @@
 import { CreateTicketPayload, EditTicketPayload, Ticket } from "../types/ticket.type";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+
 export const ticketService = {
   async getAllTickets(token: string): Promise<Ticket[]> {
     if (!token) throw new Error('Realize o login primeiro.');
-    const response = await fetch('http://localhost:8080/ticket', {
+    const response = await fetch(`${API_URL}/ticket`, {
       headers: { 'Authorization': `Bearer ${token}` },
     });
     const data = await response.json();
@@ -13,7 +15,7 @@ export const ticketService = {
 
   async getTicketById(id: string, token: string): Promise<Ticket> {
     if (!token) throw new Error('Realize o login primeiro.');
-    const response = await fetch(`http://localhost:8080/ticket/${id}`, {
+    const response = await fetch(`${API_URL}/ticket/${id}`, {
       headers: { 'Authorization': `Bearer ${token}` },
     });
     const data = await response.json();
@@ -23,7 +25,7 @@ export const ticketService = {
 
   async createTicket(payload: CreateTicketPayload, token: string): Promise<Ticket> {
     if (!token) throw new Error('Realize o login primeiro.');
-    const response = await fetch('http://localhost:8080/ticket', {
+    const response = await fetch(`${API_URL}/ticket`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -38,7 +40,7 @@ export const ticketService = {
 
   async updateTicket(id: string, payload: EditTicketPayload, token: string): Promise<void> {
     if (!token) throw new Error('Realize o login primeiro.');
-    const response = await fetch(`http://localhost:8080/ticket/${id}`, {
+    const response = await fetch(`${API_URL}/ticket/${id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -54,7 +56,7 @@ export const ticketService = {
 
   async addComment(ticketId: string, text: string, token: string): Promise<void> {
     if (!token) throw new Error('Realize o login primeiro.');
-    const response = await fetch(`http://localhost:8080/ticket/${ticketId}/comments`, {
+    const response = await fetch(`${API_URL}/ticket/${ticketId}/comments`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -70,7 +72,7 @@ export const ticketService = {
 
   async deleteTicket(id: string, token: string): Promise<void> {
     if (!token) throw new Error('Realize o login primeiro.');
-    const response = await fetch(`http://localhost:8080/ticket/${id}`, {
+    const response = await fetch(`${API_URL}/ticket/${id}`, {
       method: 'DELETE',
       headers: { 'Authorization': `Bearer ${token}` },
     });

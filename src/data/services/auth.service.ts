@@ -1,11 +1,13 @@
 import { AuthResponse } from "../types/auth.type";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+
 export const authService = {
   async login(
     email: string, 
     password: string
   ): Promise<AuthResponse> {
-    const response = await fetch('http://localhost:8080/auth/login', {
+    const response = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -27,7 +29,7 @@ export const authService = {
     email: string, 
     password: string
   ): Promise<AuthResponse> {
-    const response = await fetch('http://localhost:8080/auth/register', {
+    const response = await fetch(`${API_URL}/auth/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

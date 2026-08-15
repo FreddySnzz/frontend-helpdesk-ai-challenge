@@ -1,11 +1,13 @@
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+
 export const metricsService = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async getMetricsData(token: string): Promise<any> {
     if (!token) throw new Error('Realize o login primeiro.');
 
-    const response = await fetch('http://localhost:8080/metrics', {
+    const response = await fetch(`${API_URL}/metrics`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -28,7 +30,7 @@ export const metricsService = {
   ) {
     if (!token) throw new Error('Realize o login primeiro.');
 
-    fetchEventSource('http://localhost:8080/metrics/stream', {
+    fetchEventSource(`${API_URL}/metrics/stream`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
